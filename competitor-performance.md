@@ -10,6 +10,9 @@ does something we don't. It does not mean the technique would make 0SFS faster.
 Measure before and after any change with `flightPerf=1` and
 `window.osfsFlightPerformance.snapshot()` ([Near-ground CPU performance](near-ground-performance.md)).
 
+What became of each item, and the ranked work that remains, is in the
+[Optimization backlog](optimization-backlog.md).
+
 Owners: **FE** is FOSS Earth, **0SFS** is this repository, and **upstream** is
 3d-tiles-renderer, whose Babylon adapter FOSS Earth uses for Google Photorealistic
 3D Tiles. Upstream fixes follow the usual rule: fix the defect where it lives, and
