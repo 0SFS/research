@@ -52,7 +52,8 @@ const sourceFiles = [...new Set(bundled.output.flatMap(chunk => chunk.type === "
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async file => [path.relative(root, file), hash(await readFile(file))])));
 const { bootstrapAircraft, createEngineControl, getFdmProfile, flightParameterDefaults, resolveAircraftDataFiles,
   captureSimulation, restoreSimulation, resetFlightLocation } = await import(pathToFileURL(helperBundle).href);
-const aircraftId = "f-35b", profile = getFdmProfile(aircraftId), dt = 1 / 120;
+// The thermal evidence was recorded at 120 Hz; it stays there to remain comparable.
+const aircraftId = "f-35b", profile = getFdmProfile(aircraftId), physicsHz = 120, dt = 1 / physicsHz;
 const manifestFile = "public/jsbsim-data/manifest.json";
 const manifestBytes = await readFile(path.join(root, manifestFile));
 sourceHashes[manifestFile] = hash(manifestBytes);
@@ -122,7 +123,7 @@ async function withAircraft(name, options, run) {
   sdk.on("stderr", ({ message }) => sdkLog.push(`${name}: ${message}`));
   try {
     for (const [file, bytes] of data) sdk.writeDataFile(file, bytes.toString("utf8"));
-    await bootstrapAircraft(sdk, aircraftId, { latDeg: 0, lonDeg: 0, altFt: 1000, airspeedKts: 0,
+    await bootstrapAircraft(sdk, aircraftId, physicsHz, { latDeg: 0, lonDeg: 0, altFt: 1000, airspeedKts: 0,
       throttleNorm: 0, engineRunning: false, ...options });
     sdk.setHoldDown(true);
     const get = property => sdk.getPropertyValue(property);
@@ -344,7 +345,7 @@ await withAircraft("cold-reset-and-model-reload", { engineRunning: true, throttl
   close(get(thermalProperties.stateK), get("propulsion/tat-c") + 273.15, "Reset wall is not ambient");
   close(get(thermalProperties.coreStateK), get("propulsion/tat-c") + 273.15, "Reset core is not ambient");
   assert.equal(sdk.runIc(), true); assert.ok(get(thermalProperties.stateK) < warm.stateK);
-  await bootstrapAircraft(sdk, aircraftId, { latDeg: 0, lonDeg: 0, altFt: 1000, airspeedKts: 0, throttleNorm: 0, engineRunning: false });
+  await bootstrapAircraft(sdk, aircraftId, physicsHz, { latDeg: 0, lonDeg: 0, altFt: 1000, airspeedKts: 0, throttleNorm: 0, engineRunning: false });
   sdk.setHoldDown(true);
   const pending = sample("cold-model-reload"); trace.push(pending); assert.equal(pending.initialized, 0); assert.equal(pending.coreInitialized, 0);
   const cold = step("cold-model-reload-first-step"); trace.push(cold);
