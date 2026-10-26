@@ -1,5 +1,7 @@
 # Open-source competitors
 
+> **Updated assessment, 25 October 2026:** [Browser flight simulator positioning](browser-flight-sim-positioning-2026-10-25.md) adds YSFLIGHT web, WebGPU competitors, Force, RCForge and current SkySim licensing. It also corrects the current physics-rate and threading claims. The September survey below is historical, not a current exhaustive ranking.
+
 This page lists the other open-source flight simulators, what each one does, and where 0SFS stands among them. The speed and memory techniques they use that 0SFS lacks are in [Competitor performance techniques](competitor-performance.md).
 
 Checked on 25 September 2026. Star counts and last-push dates come from GitHub on that day, except FlightGear's, which come from GitLab. Features come from each project's own README. [Sources](#sources) says how each project was found.
